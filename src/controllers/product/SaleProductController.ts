@@ -2,22 +2,23 @@ import { Request, Response } from "express";
 import { SaleProductsRequest } from "../../models/interfaces/product/SaleProductRequest";
 import { inject, injectable } from "tsyringe";
 import { SaleProductUseCase } from "../../usecases/product/SaleProductUseCase";
+import { IController } from "../protocols/IController";
 
 @injectable()
-class SaleProductController {
+class SaleProductController implements IController {
   constructor(
     @inject(SaleProductUseCase) private saleProductUseCase: SaleProductUseCase
   ) {}
 
-  async handle(request: Request, response: Response) {
-    const sales: SaleProductsRequest = request.body;
+  async handle(req: Request, res: Response): Promise<any> {
+    const sales: SaleProductsRequest = req.body;
 
     try {
-      console.log("Sales request data:", request.body);
+      console.log("Sales request data:", req.body);
       const saleProduct = await this.saleProductUseCase.execute(sales);
-      return response.json(saleProduct);
+      return res.status(200).json(saleProduct);
     } catch (error) {
-      return response.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   }
 }

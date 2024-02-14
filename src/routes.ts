@@ -59,10 +59,12 @@ router.delete(
   isAuthenticated,
   new DeleteProductController().handle
 );
+
+//vender produto
 router.put(
   "/product/sale",
   isAuthenticated,
-  new SaleProductController().handle
+  handleController(SaleProductController)
 );
 
 // Customer
