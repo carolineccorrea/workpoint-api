@@ -1,8 +1,16 @@
-export interface ProductSaleRequest {
-  productId: string; // Changed from product_id to productId
+interface ProductSaleRequest {
+  productId: string;
   amount: number;
 }
 
-export interface SaleProductsRequest {
+interface CustomerSaleRequest {
+  name: string;
+  email?: string;
+  cpf?: string;
+  cnpj?: string;
+}
+
+export interface SaleRequest {
+  customer: CustomerSaleRequest;
   sales: ProductSaleRequest[];
 }

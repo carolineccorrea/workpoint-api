@@ -61,9 +61,9 @@ model Item {
 model Customer {
   id         String    @id @default(uuid())
   name       String
-  email      String?
-  cpf        String?
-  cnpj       String?
+  email      String?   @unique
+  cpf        String?   @unique
+  cnpj       String?   @unique
   created_at DateTime? @default(now())
   updated_at DateTime? @default(now())
 
