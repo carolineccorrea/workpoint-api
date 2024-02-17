@@ -24,35 +24,37 @@ class SaleProductService {
   async createOrUpdateCustomer(customerData: CustomerData) {
     const { name, email, cpf, cnpj } = customerData;
   
-    // Validação para garantir que pelo menos um identificador único esteja presente
+    /*
     if (!email && !cpf && !cnpj) {
       throw new Error("Pelo menos um identificador único (email, cpf ou cnpj) deve ser fornecido.");
     }
+    */
   
-    // Define a chave de busca com base nos dados disponíveis
-    let uniqueKey = cpf ? { cpf } : cnpj ? { cnpj } : { email };
+    let customer = null;
+    
+    // Tenta encontrar o cliente com base em CPF, CNPJ ou email
+    if (cpf) {
+      customer = await prismaClient.customer.findFirst({ where: { cpf } });
+    } else if (cnpj) {
+      customer = await prismaClient.customer.findFirst({ where: { cnpj } });
+    } else if (email) {
+      customer = await prismaClient.customer.findFirst({ where: { email } });
+    }
   
-    try {
-      let customer = await prismaClient.customer.findUnique({
-        where: uniqueKey,
+    if (customer) {
+      // Atualiza o cliente existente
+      return prismaClient.customer.update({
+        where: { id: customer.id },
+        data: { name, email, cpf, cnpj },
       });
-  
-      if (customer) {
-        return prismaClient.customer.update({
-          where: { id: customer.id },
-          data: { name, email, cpf, cnpj },
-        });
-      } else {
-        return prismaClient.customer.create({
-          data: { name, email, cpf, cnpj },
-        });
-      }
-    } catch (error) {
-      // Tratamento adequado de erros
-      console.error("Erro ao criar ou atualizar cliente:", error);
-      throw error; // ou lidar de forma mais específica com o erro
+    } else {
+      // Cria um novo cliente
+      return prismaClient.customer.create({
+        data: { name, email, cpf, cnpj },
+      });
     }
   }
+  
   
 
   async createOrder(customerId: string, total: number) {

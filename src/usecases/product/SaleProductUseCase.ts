@@ -23,37 +23,43 @@ class SaleProductUseCase {
   constructor(private productService: SaleProductService) {}
 
   async execute({ customer, sales }: SaleRequest) {
-    if (sales.length === 0) {
-      throw new Error("Nenhum produto foi passado para venda!");
+    try {
+      if (sales.length === 0) {
+        throw new Error("Nenhum produto foi passado para venda!");
+      }
+
+      return this.productService.executeInTransaction(async () => {
+        // Cria ou atualiza o cliente
+        const customerRecord = await this.productService.createOrUpdateCustomer(customer);
+
+        // Calcula o total do pedido
+        const total = await this.calculateTotal(sales);
+
+        // Cria o pedido
+        const order = await this.productService.createOrder(customerRecord.id, total);
+        console.log(order)
+
+        // Processa cada item de venda
+        return Promise.all(
+          sales.map(async ({ productId, amount }) => {
+            this.validateProductSale(productId, amount);
+
+            // Obtém o preço atual do produto
+            const product = await this.productService.findProductById(productId);
+
+            // Atualiza a quantidade do produto
+            await this.productService.updateProductAmount(productId, amount);
+
+            // Cria um item de pedido
+            return this.productService.createOrderItem(order.id, productId, amount, Number(product.price));
+          })
+        );
+      });
+    } catch (error) {
+      console.error('Erro ao executar a venda:', error);
+      // Você pode adicionar qualquer tratamento adicional de erro aqui, se necessário
+      throw error; // Relança o erro após logá-lo
     }
-
-    return this.productService.executeInTransaction(async () => {
-      // Cria ou atualiza o cliente
-      const customerRecord = await this.productService.createOrUpdateCustomer(customer);
-
-      // Calcula o total do pedido
-      const total = await this.calculateTotal(sales);
-
-      // Cria o pedido
-      const order = await this.productService.createOrder(customerRecord.id, total);
-      console.log(order)
-
-      // Processa cada item de venda
-      return Promise.all(
-        sales.map(async ({ productId, amount }) => {
-          this.validateProductSale(productId, amount);
-
-          // Obtém o preço atual do produto
-          const product = await this.productService.findProductById(productId);
-
-          // Atualiza a quantidade do produto
-          await this.productService.updateProductAmount(productId, amount);
-
-          // Cria um item de pedido
-          return this.productService.createOrderItem(order.id, productId, amount, Number(product.price));
-        })
-      );
-    });
   }
 
   async calculateTotal(sales: ProductSaleRequest[]): Promise<number> {
