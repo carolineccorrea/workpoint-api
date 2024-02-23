@@ -12,19 +12,25 @@ class CreateCustomerController implements IController {
 
   async handle(req: Request, res: Response): Promise<void> {
     try {
-      const { name, email, cpf, cnpj }: CreateCustomer = req.body
+      const { name, email, cpf, cnpj }: CreateCustomer = req.body;
 
+      // Validação aprimorada (opcional, dependendo das regras de negócio)
       if (!cpf && !cnpj && !email) {
-        res.status(400).send({ error: 'Campo CPF ou CNPJ ou EMAIL deve ser preenchido.' });
+        res.status(400).send({ error: 'Campo CPF, CNPJ ou EMAIL deve ser preenchido.' });
         return;
       }
 
+      // Aqui você pode adicionar validações adicionais para o formato de CPF, CNPJ e email, se necessário
+
       const customer = await this.createCustomerUseCase.execute({ name, email, cpf, cnpj });
-      res.json(customer);
+
+      // Resposta com o cliente criado
+      res.status(201).json(customer);
     } catch (error) {
-        res.status(500).send({ error: error.message });
-      }
+      // Melhor manipulação de erros com mais contexto
+      res.status(500).send({ error: 'Erro ao criar cliente: ' + error.message });
     }
+  }
 }
 
-export { CreateCustomerController }
+export { CreateCustomerController };

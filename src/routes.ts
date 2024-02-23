@@ -17,6 +17,7 @@ import { SaleProductController } from "./controllers/product/SaleProductControll
 import { CreateCustomerController } from "./controllers/customer/CreateCustomerController";
 import { ListCustomersController } from "./controllers/customer/ListCusomersController";
 import { handleController } from "./controllers/protocols/HandleController";
+import { CreateServiceOrderController } from "./controllers/serviceOrder/CreateServiceOrderController";
 
 const router = Router();
 
@@ -84,6 +85,13 @@ router.get(
   "/customers",
   isAuthenticated,
   new ListCustomersController().handle
+);
+
+//Ordem de Servico
+
+router.post("/serviceorder",
+ isAuthenticated,
+ handleController(CreateServiceOrderController)
 );
 
 
