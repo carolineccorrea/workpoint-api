@@ -1,13 +1,13 @@
 import { injectable, inject } from "tsyringe";
 import { CreateServiceOrder } from "../../models/interfaces/serviceOrder/serviceOrderRequest";
 import { CreateServiceOrderService } from "../../services/serviceOrder/CreateServiceOrderService";
-import { GetCustomerService } from "../../services/customer/GetCustomerService";
+import { CustomerService } from "../../services/customer/CustomerService";
 
 @injectable()
 export class CreateServiceOrderUseCase {
   constructor(
     @inject(CreateServiceOrderService) private serviceOrderService: CreateServiceOrderService,
-    @inject(GetCustomerService) private customerService: GetCustomerService // Injete o CustomerService
+    @inject(CustomerService) private customerService: CustomerService // Injete o CustomerService
   ) {}
 
   async execute(serviceOrderData: CreateServiceOrder): Promise<any> {

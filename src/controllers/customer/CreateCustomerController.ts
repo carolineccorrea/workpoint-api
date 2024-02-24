@@ -24,11 +24,14 @@ class CreateCustomerController implements IController {
 
       const customer = await this.createCustomerUseCase.execute({ name, email, cpf, cnpj });
 
-      // Resposta com o cliente criado
+      if (!customer) {
+        res.status(400).json(customer.error);
+      }
+
       res.status(201).json(customer);
     } catch (error) {
       // Melhor manipulação de erros com mais contexto
-      res.status(500).send({ error: 'Erro ao criar cliente: ' + error.message });
+      res.status(500).send({ error: 'Erro ao criar cliente: Verifique os campos e tente novamente.'});
     }
   }
 }

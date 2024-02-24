@@ -62,7 +62,7 @@ model Customer {
   id            String         @id @default(uuid())
   name          String
   email         String?
-  cpf           String?
+  cpf           String         @unique
   cnpj          String?
   address       String?
   neighborhood  String?
