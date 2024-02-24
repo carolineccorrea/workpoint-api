@@ -1,5 +1,4 @@
 export interface CreateServiceOrder {
-  //id: number;
   equipment: string;
   accessories?: string; // O sinal '?' indica que este campo é opcional
   complaint: string;

@@ -13,7 +13,7 @@ class CreateServiceOrderService {
         equipment: equipment,
         accessories: accessories,
         complaint: complaint,
-        entryDate: entryDate,
+        entryDate: new Date(entryDate),
         status: status,
         description: description,
         serialNumber: serialNumber,
