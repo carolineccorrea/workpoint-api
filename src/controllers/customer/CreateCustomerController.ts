@@ -31,7 +31,7 @@ class CreateCustomerController implements IController {
       res.status(201).json(customer);
     } catch (error) {
       // Melhor manipulação de erros com mais contexto
-      res.status(500).send({ error: 'Erro ao criar cliente: Verifique os campos e tente novamente.'});
+      res.status(500).send({ error: error.message});
     }
   }
 }

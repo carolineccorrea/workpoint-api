@@ -5,6 +5,7 @@ import prismaClient from "../../prisma";
 class CustomerService {
   
   async create({ name, email, cpf, cnpj }: CreateCustomer) {
+
     const customer = await prismaClient.customer.create({
       data: {
         name: name,
@@ -16,8 +17,8 @@ class CustomerService {
     return customer;
   }
 
-  async findCustomerById(id: string) {
-    return prismaClient.customer.findUnique({ where: { id } });
+  async findCustomerByCpf(id: string) {
+    return prismaClient.customer.findMany({ where: { id } });
   }
 
   async searchCustomers(query: string) {
