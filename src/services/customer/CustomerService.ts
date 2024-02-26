@@ -3,6 +3,21 @@ import { CreateCustomer } from "../../models/interfaces/customer/CreateCustomer"
 import prismaClient from "../../prisma";
 
 class CustomerService {
+
+  async list() {
+    const customers = await prismaClient.customer.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cpf: true,
+        cnpj: true,
+        branchCode: true,
+        branchId: true
+      },
+    });
+    return customers;
+  }
   
   async create({ name, email, cpf, cnpj, branchCode, branchId }: CreateCustomer) {
 

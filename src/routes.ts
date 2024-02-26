@@ -69,26 +69,14 @@ router.put(
   handleController(SaleProductController)
 );
 
-// Customer
-
-/*
-router.post(
-  "/customer",
-  isAuthenticated,
-  new CreateCustomerController().handle
-);
-*/
 
 //Clientes
 router.post("/customer", isAuthenticated, handleController(CreateCustomerController));
 
 router.get("/customers/search", isAuthenticated, handleController(SearchCustomerController));
 
-router.get(
-  "/customers",
-  isAuthenticated,
-  new ListCustomersController().handle
-);
+//listar todos
+router.get("/customers", isAuthenticated, handleController(ListCustomersController));
 
 //Ordem de Servico
 
