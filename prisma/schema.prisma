@@ -72,8 +72,12 @@ model Customer {
   orders        Order[]
   serviceOrders ServiceOrder[]
 
+  branchId      String         // Additional field for branch ID
+  branchCode    String         // Additional field for branch code
+
   @@map("customers")
 }
+
 
 model Order {
   id          String    @id @default(uuid())

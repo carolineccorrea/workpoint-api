@@ -12,4 +12,7 @@ export interface CreateCustomer {
   updated_at?: Date;
   orders?: any[];
   serviceOrders?: CreateServiceOrder[];
+
+  branchCode: string;
+  branchId: string;
 }

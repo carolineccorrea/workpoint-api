@@ -12,7 +12,7 @@ class CreateCustomerController implements IController {
 
   async handle(req: Request, res: Response): Promise<void> {
     try {
-      const { name, email, cpf, cnpj }: CreateCustomer = req.body;
+      const { name, email, cpf, cnpj, branchCode, branchId }: CreateCustomer = req.body;
 
       // Validação aprimorada (opcional, dependendo das regras de negócio)
       if (!cpf && !cnpj && !email) {
@@ -22,7 +22,7 @@ class CreateCustomerController implements IController {
 
       // Aqui você pode adicionar validações adicionais para o formato de CPF, CNPJ e email, se necessário
 
-      const customer = await this.createCustomerUseCase.execute({ name, email, cpf, cnpj });
+      const customer = await this.createCustomerUseCase.execute({ name, email, cpf, cnpj, branchCode, branchId });
 
       if (!customer) {
         res.status(400).json(customer.error);

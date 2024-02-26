@@ -4,14 +4,16 @@ import prismaClient from "../../prisma";
 
 class CustomerService {
   
-  async create({ name, email, cpf, cnpj }: CreateCustomer) {
+  async create({ name, email, cpf, cnpj, branchCode, branchId }: CreateCustomer) {
 
     const customer = await prismaClient.customer.create({
       data: {
         name: name,
         email: email,
         cpf: cpf,
-        cnpj: cnpj
+        cnpj: cnpj,
+        branchCode: branchCode,
+        branchId: branchId
       },
     });
     return customer;

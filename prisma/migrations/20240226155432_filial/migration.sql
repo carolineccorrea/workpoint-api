@@ -57,6 +57,8 @@ CREATE TABLE "customers" (
     "city" TEXT,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "branchId" TEXT NOT NULL,
+    "branchCode" TEXT NOT NULL,
 
     CONSTRAINT "customers_pkey" PRIMARY KEY ("id")
 );
