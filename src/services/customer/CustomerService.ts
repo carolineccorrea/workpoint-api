@@ -17,8 +17,10 @@ class CustomerService {
     return customer;
   }
 
-  async findCustomerByCpf(id: string) {
-    return prismaClient.customer.findMany({ where: { id } });
+  async findCustomerByCpf(cpf: string) {
+    return prismaClient.customer.findMany({
+      where: { cpf },
+    });
   }
 
   async searchCustomers(query: string) {

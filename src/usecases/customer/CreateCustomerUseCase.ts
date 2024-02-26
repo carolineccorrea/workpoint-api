@@ -8,23 +8,18 @@ export class CreateCustomerUseCase {
 
   async execute(customerData: CreateCustomer): Promise<any> {
     try {
-      // Verifica se o CPF é diferente de vazio e se já existe no banco de dados
-      if (customerData.cpf && customerData.cpf.trim() !== '') {
-        const cpfExists = await this.verifyCpf(customerData.cpf);
-        if (cpfExists) {
+      const { cpf } = customerData;
+
+      if (cpf?.trim()) {
+        const existingCustomers = await this.customerService.findCustomerByCpf(cpf);
+        if (existingCustomers && existingCustomers.length > 0) {
           throw new Error("Cliente com este CPF já existe.");
         }
       }
 
-      const newCustomer = await this.customerService.create(customerData);
-      return newCustomer;
+      return await this.customerService.create(customerData);
     } catch (error) {
       throw error;
     }
-  }
-
-  private async verifyCpf(cpf: string): Promise<boolean> {
-    const customer = await this.customerService.findCustomerByCpf(cpf);
-    return !!customer;
   }
 }
