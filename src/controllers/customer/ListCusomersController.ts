@@ -1,11 +1,19 @@
 import { Request, Response } from "express";
 import { ListCustomersService } from "../../services/customer/ListCustomersService";
+import { IController } from "../protocols/IController";
+import { injectable, inject } from "tsyringe";
+import { SearchCustomerUseCase } from "../../usecases/customer/SearchCustomerUseCase";
+import { ListCustomersUseCase } from "../../usecases/customer/ListCustomerUseCase";
 
-class ListCustomersController {
-  async handle(request: Request, response: Response) {
-    const listCustomersService = new ListCustomersService();
-    const customers = await listCustomersService.execute();
-    return response.json(customers);
+@injectable()
+class ListCustomersController implements IController {
+  constructor(
+    @inject(ListCustomersUseCase) private listCustomersUseCase: ListCustomersUseCase
+  ) {}
+
+  async handle(req: Request, res: Response): Promise<void> {
+    const customers = await this.listCustomersUseCase.execute()
+    res.json(customers);
   }
 }
 

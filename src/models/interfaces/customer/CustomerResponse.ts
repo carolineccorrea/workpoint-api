@@ -1,6 +1,6 @@
 import { CreateServiceOrder } from "../serviceOrder/serviceOrderRequest";
 
-export interface CreateCustomer {
+export interface CustomerResponse {
   name: string;
   email?: string;
   cpf?: string;
@@ -15,4 +15,6 @@ export interface CreateCustomer {
 
   branchCode: string;
   branchId: string;
+
+  branchCodeId: string;
 }

@@ -59,28 +59,33 @@ model Item {
 }
 
 model Customer {
-  id         String    @id @default(uuid())
-  name       String
-  email      String?
-  cpf        String?
-  cnpj       String? 
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
+  id            String         @id @default(uuid())
+  name          String
+  email         String?
+  cpf           String?
+  cnpj          String?
+  address       String?
+  neighborhood  String?
+  city          String?
+  created_at    DateTime?      @default(now())
+  updated_at    DateTime?      @default(now())
+  orders        Order[]
+  serviceOrders ServiceOrder[]
 
-  orders     Order[]
+  branchId      String         // Additional field for branch ID
+  branchCode    String         // Additional field for branch code
 
   @@map("customers")
 }
 
+
 model Order {
-  id         String      @id @default(uuid())
-  total      Float
-  created_at DateTime?   @default(now())
-  updated_at DateTime?   @default(now())
-
-  customer    Customer   @relation(fields: [customer_id], references: [id])
+  id          String    @id @default(uuid())
+  total       Float
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
   customer_id String
-
+  customer    Customer  @relation(fields: [customer_id], references: [id])
   orderItems  OrderItem[]
 
   @@map("orders")
@@ -100,4 +105,22 @@ model OrderItem {
   product_id String
 
   @@map("order_items")
+}
+
+model ServiceOrder {
+  id             Int       @id @default(autoincrement())
+  equipment      String
+  accessories    String?
+  complaint      String
+  entryDate      DateTime  @default(now())
+  status         String
+  description    String
+  serialNumber   String
+  condition      String
+  customerId     String
+  underWarranty  Boolean   @default(false)
+
+  customer       Customer  @relation(fields: [customerId], references: [id])
+
+  @@map("service_orders")
 }
