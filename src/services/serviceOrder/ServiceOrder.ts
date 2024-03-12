@@ -14,7 +14,7 @@ class ServiceOrderService {
         equipment: equipment,
         accessories: accessories,
         complaint: complaint,
-        entryDate: new Date(entryDate),
+        entryDate: entryDate,
         status: status,
         description: description,
         serialNumber: serialNumber,
