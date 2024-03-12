@@ -2,7 +2,7 @@ export interface CreateServiceOrder {
   equipment: string;
   accessories?: string;
   complaint: string;
-  entryDate: Date;
+  entryDate?: Date;
   status: string;
   description: string;
   serialNumber: string;
