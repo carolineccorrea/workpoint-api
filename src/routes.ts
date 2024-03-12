@@ -19,6 +19,8 @@ import { ListCustomersController } from "./controllers/customer/ListCusomersCont
 import { handleController } from "./controllers/protocols/HandleController";
 import { CreateServiceOrderController } from "./controllers/serviceOrder/CreateServiceOrderController";
 import { SearchCustomerController } from "./controllers/customer/SearchCustomerController";
+import { ListServiceOrdersController } from "./controllers/serviceOrder/ListServiceOrdersController";
+import { ListServiceOrderByCustomerController } from "./controllers/serviceOrder/ListServiceOrderByCustomerController";
 
 const router = Router();
 
@@ -84,6 +86,10 @@ router.post("/serviceorder",
  isAuthenticated,
  handleController(CreateServiceOrderController)
 );
+
+router.get("/serviceorders",isAuthenticated,handleController(ListServiceOrdersController));
+
+router.get("/serviceorders/customer",isAuthenticated,handleController(ListServiceOrderByCustomerController));
 
 
 

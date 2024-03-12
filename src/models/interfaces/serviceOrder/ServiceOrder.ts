@@ -1,4 +1,4 @@
-export interface CreateServiceOrder {
+export interface ServiceOrder {
   equipment: string;
   accessories?: string;
   complaint: string;
