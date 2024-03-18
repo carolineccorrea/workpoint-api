@@ -28,12 +28,18 @@ const router = Router();
 router.post("/user", new CreateUserController().handle);
 router.post("/auth", new AuthUserController().handle);
 
-/* CATEGORY */
+/*
 router.post(
   "/category",
   isAuthenticated,
-  new CreateCategoryController().handle
+  handleController(ListCustomersController)
 );
+*/
+
+router.post("/category",
+ handleController(CreateCategoryController)
+);
+
 router.put(
   "/category/edit",
   isAuthenticated,
