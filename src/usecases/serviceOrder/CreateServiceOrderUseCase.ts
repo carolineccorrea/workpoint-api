@@ -3,6 +3,7 @@ import { CreateServiceOrder } from '../../models/interfaces/serviceOrder/service
 import { CustomerService } from '../../services/customer/CustomerService';
 import { ServiceOrderService } from '../../services/serviceOrder/ServiceOrder';
 import { convertToBrazilTime } from '../../utils/ConvertToBrazilTime';
+import { ServiceOrderResponse } from '../../models/interfaces/serviceOrder/ServiceOrderResponse';
 
 @injectable()
 export class CreateServiceOrderUseCase {
@@ -11,11 +12,11 @@ export class CreateServiceOrderUseCase {
       @inject(CustomerService) private customerService: CustomerService
   ) {}
 
-  async execute(serviceOrderData: CreateServiceOrder): Promise<any> {
+  async execute(serviceOrderData: CreateServiceOrder): Promise<ServiceOrderResponse> {
       try {
           const customer = await this.customerService.findCustomerById(serviceOrderData.customerId);
           if (!customer) {
-              return { error: "Cliente não encontrado com o ID fornecido." };
+              throw new Error("Client ID não fornecido");
           }
 
           // Obtém a data e hora UTC atual

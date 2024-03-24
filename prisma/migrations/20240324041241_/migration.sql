@@ -100,6 +100,8 @@ CREATE TABLE "service_orders" (
     "condition" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
     "underWarranty" BOOLEAN NOT NULL DEFAULT false,
+    "brand" TEXT NOT NULL,
+    "model" TEXT NOT NULL,
 
     CONSTRAINT "service_orders_pkey" PRIMARY KEY ("id")
 );

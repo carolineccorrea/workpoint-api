@@ -9,4 +9,6 @@ export interface CreateServiceOrder {
   condition: string;
   customerId: string;
   underWarranty: boolean;
+  brand: string;
+  model: string;
 }

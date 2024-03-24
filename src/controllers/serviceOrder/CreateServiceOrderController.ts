@@ -12,7 +12,17 @@ class CreateServiceOrderController implements IController {
 
   async handle(req: Request, res: Response): Promise<void> {
     try {
-      const { equipment, accessories, complaint, customerId, status, serialNumber, underWarranty, condition, description }: CreateServiceOrder = req.body;
+      const { equipment,
+              accessories,
+              complaint, 
+              customerId, 
+              status, 
+              serialNumber, 
+              underWarranty, 
+              condition, 
+              description,
+              brand,
+              model }: CreateServiceOrder = req.body;
 
       if (!customerId) {
         res.status(400).send({ error: 'Um cliente válido é necessário para criar uma ordem de serviço.' });
@@ -20,13 +30,18 @@ class CreateServiceOrderController implements IController {
       }
 
       const serviceOrder = await this.createServiceOrderUseCase.execute({ 
-        equipment, accessories, complaint, customerId, status, serialNumber, underWarranty, condition, description
+        equipment, 
+        accessories, 
+        complaint, 
+        customerId, 
+        status, 
+        serialNumber, 
+        underWarranty, 
+        condition, 
+        description,
+        brand,
+        model
       });
-
-      if (serviceOrder.error) {
-        res.status(400).send(serviceOrder);
-      return;
-      }
       
       res.json(serviceOrder);
     } catch (error) {

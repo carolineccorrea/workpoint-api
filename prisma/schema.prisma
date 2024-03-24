@@ -119,6 +119,9 @@ model ServiceOrder {
   condition      String
   customerId     String
   underWarranty  Boolean   @default(false)
+  brand          String
+  model          String
+
 
   customer       Customer  @relation(fields: [customerId], references: [id])
 
