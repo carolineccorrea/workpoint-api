@@ -1,5 +1,5 @@
 import { injectable, inject } from "tsyringe";
-import { ServiceOrder } from "../../models/interfaces/serviceOrder/ServiceOrder";
+import { ServiceOrder } from "../../models/interfaces/serviceOrder/ServiceOrderResponse";
 import { ServiceOrderService } from "../../services/serviceOrder/ServiceOrder";
 
 @injectable()

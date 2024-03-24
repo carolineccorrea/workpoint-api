@@ -1,4 +1,4 @@
-export interface ServiceOrder {
+export interface ServiceOrderResponse {
   equipment: string;
   accessories?: string;
   complaint: string;

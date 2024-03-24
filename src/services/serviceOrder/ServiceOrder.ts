@@ -1,4 +1,4 @@
-import { ServiceOrder } from "../../models/interfaces/serviceOrder/ServiceOrder";
+import { ServiceOrderResponse } from "../../models/interfaces/serviceOrder/ServiceOrderResponse";
 import { CreateServiceOrder } from "../../models/interfaces/serviceOrder/serviceOrderRequest";
 import prismaClient from "../../prisma";
 import { injectable } from 'tsyringe';
@@ -7,7 +7,7 @@ import { injectable } from 'tsyringe';
 class ServiceOrderService {
   async execute({
     equipment, accessories, complaint, entryDate, status, description, 
-    serialNumber, condition, customerId, underWarranty
+    serialNumber, condition, customerId, underWarranty, brand, model
   }: CreateServiceOrder) {
     const serviceOrder = await prismaClient.serviceOrder.create({
       data: {
@@ -20,13 +20,15 @@ class ServiceOrderService {
         serialNumber: serialNumber,
         condition: condition,
         customerId: customerId,
-        underWarranty: underWarranty
+        underWarranty: underWarranty,
+        brand: brand,
+        model: model
       },
     });
     return serviceOrder;
   }
 
-  async list(): Promise<ServiceOrder[]>{
+  async list(): Promise<ServiceOrderResponse[]>{
     const os = await prismaClient.serviceOrder.findMany({
       select: {
         equipment: true,
@@ -44,7 +46,7 @@ class ServiceOrderService {
     return os
   }
 
-  async listOS(customerId?: string): Promise<ServiceOrder[]> {
+  async listOS(customerId?: string): Promise<ServiceOrderResponse[]> {
     return prismaClient.serviceOrder.findMany({
       where: { customerId },
     });
