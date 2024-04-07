@@ -40,6 +40,12 @@ class CustomerService {
     });
   }
 
+  async findCustomerById(id: string) {
+    return prismaClient.customer.findUnique({
+      where: { id },
+    });
+  }
+
   async searchCustomers(query: string) {
     return prismaClient.customer.findMany({
       where: {

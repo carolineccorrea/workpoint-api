@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { ListCustomersService } from "../../services/customer/ListCustomersService";
 import { IController } from "../protocols/IController";
 import { injectable, inject } from "tsyringe";
 import { SearchCustomerUseCase } from "../../usecases/customer/SearchCustomerUseCase";
