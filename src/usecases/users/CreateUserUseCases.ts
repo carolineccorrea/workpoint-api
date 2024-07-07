@@ -1,0 +1,15 @@
+import { injectable } from "tsyringe";
+import { UserRepository } from "../../infra/repositories/UserRepository";
+
+@injectable()
+export class CreateUserUseCase {
+    constructor(private userRepo: UserRepository) {}
+
+    async execute(name: string, email: string, password: string): Promise<any> {
+      try {  
+        return this.userRepo.create({ name, email, password });
+      } catch (error) {
+        return error;
+      }
+    }
+}
