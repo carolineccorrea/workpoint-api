@@ -8,12 +8,32 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(uuid())
+  id         String         @id @default(uuid())
   name       String
-  email      String
+  email      String         @unique
   password   String
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
+  role       Role           @default(USER)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  clockInsOuts ClockInOut[]
 
   @@map("users")
+}
+
+model ClockInOut {
+  id        String   @id @default(uuid())
+  userId    String
+  clockIn   DateTime
+  clockOut  DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("clock_in_outs")
+}
+
+enum Role {
+  ADMIN
+  USER
 }
