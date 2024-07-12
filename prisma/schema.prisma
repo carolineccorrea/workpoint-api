@@ -17,20 +17,36 @@ model User {
   updatedAt  DateTime       @updatedAt
 
   clockInsOuts ClockInOut[]
+  lunchBreaks  LunchBreak[]
 
   @@map("users")
 }
 
 model ClockInOut {
-  id        String   @id @default(uuid())
-  userId    String
-  clockIn   DateTime
-  clockOut  DateTime?
-  createdAt DateTime @default(now())
+  id               String   @id @default(uuid())
+  userId           String
+  clockIn          DateTime
+  clockOut         DateTime?
+  lunchBreakId     String?
+  createdAt        DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
+  lunchBreak       LunchBreak? @relation(fields: [lunchBreakId], references: [id])
 
   @@map("clock_in_outs")
+}
+
+model LunchBreak {
+  id               String   @id @default(uuid())
+  userId           String
+  lunchBreakStart  DateTime
+  lunchBreakEnd    DateTime?
+  createdAt        DateTime @default(now())
+
+  user             User     @relation(fields: [userId], references: [id])
+  clockInOuts      ClockInOut[]
+
+  @@map("lunch_breaks")
 }
 
 enum Role {

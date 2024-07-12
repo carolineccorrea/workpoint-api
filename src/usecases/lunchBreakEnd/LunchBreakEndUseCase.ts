@@ -3,9 +3,8 @@ import { DateTime } from "luxon";
 import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
 import { ValidateClockActionUseCase } from "../validateClockAction/validateClockAction";
 
-
 @injectable()
-export class CreateClockInUseCase {
+export class LunchBreakEndUseCase {
   constructor(
     private clockRepository: ClockRepository,
     private validateClockActionUseCase: ValidateClockActionUseCase
@@ -17,12 +16,11 @@ export class CreateClockInUseCase {
         throw new Error("User ID is required");
       }
 
-      await this.validateClockActionUseCase.validateClockIn(userId);
+      await this.validateClockActionUseCase.validateLunchBreakEnd(userId);
 
-      const now = DateTime.now().minus({ hours: 3 }); // Ajusta o horário para UTC-3
-      const clockIn = now.toJSDate();
-
-      return await this.clockRepository.createClockIn({ userId, clockIn });
+      const now = DateTime.now().minus({ hours: 3 });
+      const lunchBreakEnd = now.toJSDate();
+      return await this.clockRepository.updateLunchBreakEnd({ userId, lunchBreakEnd });
     } catch (error) {
       throw new Error(error.message);
     }
