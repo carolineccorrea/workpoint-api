@@ -393,31 +393,6 @@ class ClockRepository {
     };
   }
 
-  async findAllByUserIdGroupedByDay(userId: string): Promise<ClockRecordDTO[]> {
-    const clockRecords = await prismaClient.clockInOut.findMany({
-      where: { userId },
-      orderBy: { clockIn: 'asc' },
-      include: {
-        lunchBreak: {
-          select: {
-            lunchBreakStart: true,
-            lunchBreakEnd: true,
-          },
-        },
-      },
-    });
-
-    return clockRecords.map(record => ({
-      id: record.id,
-      userId: record.userId,
-      clockIn: record.clockIn,
-      clockOut: record.clockOut,
-      lunchBreakStart: record.lunchBreak?.lunchBreakStart || null,
-      lunchBreakEnd: record.lunchBreak?.lunchBreakEnd || null,
-      createdAt: record.createdAt,
-    }));
-  }
-
   async findUserById(userId: string) {
     return await prismaClient.user.findUnique({
       where: { id: userId },
