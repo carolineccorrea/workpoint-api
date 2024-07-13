@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { injectable, inject } from "tsyringe";
 import { IController } from "../protocols/IController";
-import { UpdateClockOutUseCase } from "../../usecases/clockOut/updateClockoutUseCase";
+import { UpdateClockOutUseCase } from "../../usecases/clockOut/UpdateClockoutUseCase";
 
 @injectable()
 class ClockOutController implements IController {

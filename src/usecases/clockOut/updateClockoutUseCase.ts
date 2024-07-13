@@ -2,13 +2,14 @@ import { injectable, inject } from "tsyringe";
 import { DateTime } from "luxon";
 import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
 import { CheckTimeDifferenceUseCase } from "../checkTime/CheckTimeDifferenceUseCase";
-
+import { ValidateClockActionUseCase } from "../validateClockAction/validateClockAction";
 
 @injectable()
 export class UpdateClockOutUseCase {
   constructor(
     private clockRepository: ClockRepository,
-    private checkTimeDifferenceUseCase: CheckTimeDifferenceUseCase
+    private checkTimeDifferenceUseCase: CheckTimeDifferenceUseCase,
+    private validateClockActionUseCase: ValidateClockActionUseCase
   ) {}
 
   async execute(userId: string): Promise<any> {
@@ -17,8 +18,10 @@ export class UpdateClockOutUseCase {
         throw new Error("User ID is required");
       }
 
+      await this.validateClockActionUseCase.validateClockOut(userId);
+
       const now = DateTime.now().minus({ hours: 3 });
-      const clockOut = now.toUTC().toJSDate();
+      const clockOut = now.toJSDate();
 
       // Verificar a diferença de tempo antes de registrar o ponto
       await this.checkTimeDifferenceUseCase.execute(userId, now);
