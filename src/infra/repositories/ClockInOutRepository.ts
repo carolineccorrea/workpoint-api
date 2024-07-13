@@ -3,14 +3,14 @@ import { ClockOutRequest } from "../../models/interfaces/clockOut/clockOutReques
 import { LunchBreakStartRequest } from "../../models/interfaces/lunchBreak/LunchBreakStartRequest";
 import { LunchBreakEndRequest } from "../../models/interfaces/lunchEnd/LunchEndRequest";
 import prismaClient from "../../prisma";
+import { ClockRecordDTO } from "../dtos/ClockRecordDTO";
 
 class ClockRepository {
-  async createClockIn({ userId, clockIn }: ClockInRequest) {
+  async createClockIn({ userId, clockIn }: ClockInRequest): Promise<ClockRecordDTO> {
     if (!userId || !clockIn) {
       throw new Error("User ID and clock-in time are required");
     }
 
-    // Verificar se o usuário existe
     const userExists = await prismaClient.user.findUnique({
       where: { id: userId },
     });
@@ -31,18 +31,31 @@ class ClockRepository {
         clockOut: true,
         lunchBreakId: true,
         createdAt: true,
+        lunchBreak: {
+          select: {
+            lunchBreakStart: true,
+            lunchBreakEnd: true,
+          },
+        },
       },
     });
 
-    return clockInRecord;
+    return {
+      id: clockInRecord.id,
+      userId: clockInRecord.userId,
+      clockIn: clockInRecord.clockIn,
+      clockOut: clockInRecord.clockOut,
+      lunchBreakStart: clockInRecord.lunchBreak?.lunchBreakStart || null,
+      lunchBreakEnd: clockInRecord.lunchBreak?.lunchBreakEnd || null,
+      createdAt: clockInRecord.createdAt,
+    };
   }
 
-  async updateClockOut({ userId, clockOut }: ClockOutRequest) {
+  async updateClockOut({ userId, clockOut }: ClockOutRequest): Promise<ClockRecordDTO> {
     if (!userId || !clockOut) {
       throw new Error("User ID and clock-out time are required");
     }
 
-    // Verificar se o usuário existe
     const userExists = await prismaClient.user.findUnique({
       where: { id: userId },
     });
@@ -96,18 +109,31 @@ class ClockRepository {
         clockOut: true,
         lunchBreakId: true,
         createdAt: true,
+        lunchBreak: {
+          select: {
+            lunchBreakStart: true,
+            lunchBreakEnd: true,
+          },
+        },
       },
     });
 
-    return updatedClockOutRecord;
+    return {
+      id: updatedClockOutRecord.id,
+      userId: updatedClockOutRecord.userId,
+      clockIn: updatedClockOutRecord.clockIn,
+      clockOut: updatedClockOutRecord.clockOut,
+      lunchBreakStart: updatedClockOutRecord.lunchBreak?.lunchBreakStart || null,
+      lunchBreakEnd: updatedClockOutRecord.lunchBreak?.lunchBreakEnd || null,
+      createdAt: updatedClockOutRecord.createdAt,
+    };
   }
 
-  async createLunchBreakStart({ userId, lunchBreakStart }: LunchBreakStartRequest) {
+  async createLunchBreakStart({ userId, lunchBreakStart }: LunchBreakStartRequest): Promise<ClockRecordDTO> {
     if (!userId || !lunchBreakStart) {
       throw new Error("User ID and lunch break start time are required");
     }
 
-    // Verificar se o usuário existe
     const userExists = await prismaClient.user.findUnique({
       where: { id: userId },
     });
@@ -130,15 +156,32 @@ class ClockRepository {
       },
     });
 
-    return lunchBreakRecord;
+    const clockInRecord = await prismaClient.clockInOut.findFirst({
+      where: {
+        userId,
+        clockOut: null,
+      },
+      orderBy: {
+        clockIn: 'desc',
+      },
+    });
+
+    return {
+      id: clockInRecord?.id || "",
+      userId: lunchBreakRecord.userId,
+      clockIn: clockInRecord?.clockIn || new Date(),
+      clockOut: clockInRecord?.clockOut || null,
+      lunchBreakStart: lunchBreakRecord.lunchBreakStart,
+      lunchBreakEnd: lunchBreakRecord.lunchBreakEnd,
+      createdAt: clockInRecord?.createdAt || new Date(),
+    };
   }
 
-  async updateLunchBreakEnd({ userId, lunchBreakEnd }: LunchBreakEndRequest) {
+  async updateLunchBreakEnd({ userId, lunchBreakEnd }: LunchBreakEndRequest): Promise<ClockRecordDTO> {
     if (!userId || !lunchBreakEnd) {
       throw new Error("User ID and lunch break end time are required");
     }
 
-    // Verificar se o usuário existe
     const userExists = await prismaClient.user.findUnique({
       where: { id: userId },
     });
@@ -177,7 +220,16 @@ class ClockRepository {
       },
     });
 
-    // Atualizar o registro de ponto com o ID do horário de almoço
+    const clockInRecord = await prismaClient.clockInOut.findFirst({
+      where: {
+        userId,
+        clockOut: null,
+      },
+      orderBy: {
+        clockIn: 'desc',
+      },
+    });
+
     await prismaClient.clockInOut.updateMany({
       where: {
         userId,
@@ -189,86 +241,22 @@ class ClockRepository {
       },
     });
 
-    return updatedLunchBreakRecord;
+    return {
+      id: clockInRecord?.id || "",
+      userId: updatedLunchBreakRecord.userId,
+      clockIn: clockInRecord?.clockIn || new Date(),
+      clockOut: clockInRecord?.clockOut || null,
+      lunchBreakStart: updatedLunchBreakRecord.lunchBreakStart,
+      lunchBreakEnd: updatedLunchBreakRecord.lunchBreakEnd,
+      createdAt: clockInRecord?.createdAt || new Date(),
+    };
   }
 
-  async findLastClockInOut(userId: string) {
+  async findLastClockInOut(userId: string): Promise<ClockRecordDTO | null> {
     const lastClockInOut = await prismaClient.clockInOut.findFirst({
-      where: {
-        userId,
-      },
-      orderBy: {
-        clockIn: 'desc',
-      },
-    });
-
-    return lastClockInOut;
-  }
-
-  async findClockInByUserIdAndDateRange(userId: string, start: Date, end: Date) {
-    return await prismaClient.clockInOut.findFirst({
-      where: {
-        userId,
-        clockIn: {
-          gte: start,
-          lte: end,
-        },
-      },
-    });
-  }
-
-  async findClockOutByUserIdAndDateRange(userId: string, start: Date, end: Date) {
-    return await prismaClient.clockInOut.findFirst({
-      where: {
-        userId,
-        clockOut: {
-          gte: start,
-          lte: end,
-        },
-      },
-    });
-  }
-
-  async findLunchBreakStartByUserIdAndDateRange(userId: string, start: Date, end: Date) {
-    return await prismaClient.lunchBreak.findFirst({
-      where: {
-        userId,
-        lunchBreakStart: {
-          gte: start,
-          lte: end,
-        },
-      },
-    });
-  }
-
-  async findLunchBreakEndByUserIdAndDateRange(userId: string, start: Date, end: Date) {
-    return await prismaClient.lunchBreak.findFirst({
-      where: {
-        userId,
-        lunchBreakEnd: {
-          gte: start,
-          lte: end,
-        },
-      },
-    });
-  }
-
-  async findAllByUserIdGroupedByDay(userId: string) {
-    const clockRecords = await prismaClient.clockInOut.findMany({
-      where: {
-        userId,
-      },
-      orderBy: {
-        clockIn: 'asc',
-      },
-      select: {
-        user: {
-          select: {
-            name: true,
-          },
-        },
-        clockIn: true,
-        clockOut: true,
+      where: { userId },
+      orderBy: { clockIn: 'desc' },
+      include: {
         lunchBreak: {
           select: {
             lunchBreakStart: true,
@@ -278,57 +266,156 @@ class ClockRepository {
       },
     });
 
-    const lunchBreakRecords = await prismaClient.lunchBreak.findMany({
+    if (!lastClockInOut) return null;
+
+    return {
+      id: lastClockInOut.id,
+      userId: lastClockInOut.userId,
+      clockIn: lastClockInOut.clockIn,
+      clockOut: lastClockInOut.clockOut,
+      lunchBreakStart: lastClockInOut.lunchBreak?.lunchBreakStart || null,
+      lunchBreakEnd: lastClockInOut.lunchBreak?.lunchBreakEnd || null,
+      createdAt: lastClockInOut.createdAt,
+    };
+  }
+
+  async findClockInByUserIdAndDateRange(userId: string, start: Date, end: Date): Promise<ClockRecordDTO | null> {
+    const clockInRecord = await prismaClient.clockInOut.findFirst({
       where: {
         userId,
+        clockIn: { gte: start, lte: end },
       },
-      orderBy: {
-        lunchBreakStart: 'asc',
-      },
-      select: {
-        lunchBreakStart: true,
-        lunchBreakEnd: true,
+      include: {
+        lunchBreak: {
+          select: {
+            lunchBreakStart: true,
+            lunchBreakEnd: true,
+          },
+        },
       },
     });
 
-    const userName = clockRecords.length > 0 ? clockRecords[0].user.name : null;
+    if (!clockInRecord) return null;
 
-    // Agrupar os registros por dia
-    const groupedRecords = clockRecords.reduce((acc, record) => {
-      const dateKey = record.clockIn.toISOString().split('T')[0];
-      if (!acc[dateKey]) {
-        acc[dateKey] = {
-          clockInsOuts: [],
-          lunchBreaks: [],
-        };
-      }
-      acc[dateKey].clockInsOuts.push({
-        clockIn: record.clockIn,
-        clockOut: record.clockOut,
-        lunchBreak: record.lunchBreak,
-      });
-      return acc;
-    }, {});
+    return {
+      id: clockInRecord.id,
+      userId: clockInRecord.userId,
+      clockIn: clockInRecord.clockIn,
+      clockOut: clockInRecord.clockOut,
+      lunchBreakStart: clockInRecord.lunchBreak?.lunchBreakStart || null,
+      lunchBreakEnd: clockInRecord.lunchBreak?.lunchBreakEnd || null,
+      createdAt: clockInRecord.createdAt,
+    };
+  }
 
-    lunchBreakRecords.forEach(record => {
-      const dateKey = record.lunchBreakStart.toISOString().split('T')[0];
-      if (!groupedRecords[dateKey]) {
-        groupedRecords[dateKey] = {
-          clockInsOuts: [],
-          lunchBreaks: [],
-        };
-      }
-      groupedRecords[dateKey].lunchBreaks.push({
-        lunchBreakStart: record.lunchBreakStart,
-        lunchBreakEnd: record.lunchBreakEnd,
-      });
+  async findClockOutByUserIdAndDateRange(userId: string, start: Date, end: Date): Promise<ClockRecordDTO | null> {
+    const clockOutRecord = await prismaClient.clockInOut.findFirst({
+      where: {
+        userId,
+        clockOut: { gte: start, lte: end },
+      },
+      include: {
+        lunchBreak: {
+          select: {
+            lunchBreakStart: true,
+            lunchBreakEnd: true,
+          },
+        },
+      },
+    });
+
+    if (!clockOutRecord) return null;
+
+    return {
+      id: clockOutRecord.id,
+      userId: clockOutRecord.userId,
+      clockIn: clockOutRecord.clockIn,
+      clockOut: clockOutRecord.clockOut,
+      lunchBreakStart: clockOutRecord.lunchBreak?.lunchBreakStart || null,
+      lunchBreakEnd: clockOutRecord.lunchBreak?.lunchBreakEnd || null,
+      createdAt: clockOutRecord.createdAt,
+    };
+  }
+
+  async findLunchBreakStartByUserIdAndDateRange(userId: string, start: Date, end: Date): Promise<ClockRecordDTO | null> {
+    const lunchBreakRecord = await prismaClient.lunchBreak.findFirst({
+      where: {
+        userId,
+        lunchBreakStart: { gte: start, lte: end },
+      },
+    });
+
+    if (!lunchBreakRecord) return null;
+
+    const clockInRecord = await prismaClient.clockInOut.findFirst({
+      where: {
+        userId,
+        lunchBreakId: lunchBreakRecord.id,
+      },
     });
 
     return {
-      userId,
-      name: userName,
-      records: groupedRecords,
+      id: clockInRecord?.id || "",
+      userId: lunchBreakRecord.userId,
+      clockIn: clockInRecord?.clockIn || new Date(),
+      clockOut: clockInRecord?.clockOut || null,
+      lunchBreakStart: lunchBreakRecord.lunchBreakStart,
+      lunchBreakEnd: lunchBreakRecord.lunchBreakEnd,
+      createdAt: clockInRecord?.createdAt || new Date(),
     };
+  }
+
+  async findLunchBreakEndByUserIdAndDateRange(userId: string, start: Date, end: Date): Promise<ClockRecordDTO | null> {
+    const lunchBreakRecord = await prismaClient.lunchBreak.findFirst({
+      where: {
+        userId,
+        lunchBreakEnd: { gte: start, lte: end },
+      },
+    });
+
+    if (!lunchBreakRecord) return null;
+
+    const clockInRecord = await prismaClient.clockInOut.findFirst({
+      where: {
+        userId,
+        lunchBreakId: lunchBreakRecord.id,
+      },
+    });
+
+    return {
+      id: clockInRecord?.id || "",
+      userId: lunchBreakRecord.userId,
+      clockIn: clockInRecord?.clockIn || new Date(),
+      clockOut: clockInRecord?.clockOut || null,
+      lunchBreakStart: lunchBreakRecord.lunchBreakStart,
+      lunchBreakEnd: lunchBreakRecord.lunchBreakEnd,
+      createdAt: clockInRecord?.createdAt || new Date(),
+    };
+  }
+
+  async findAllByUserIdGroupedByDay(userId: string): Promise<ClockRecordDTO[]> {
+    const clockRecords = await prismaClient.clockInOut.findMany({
+      where: { userId },
+      orderBy: { clockIn: 'asc' },
+      include: {
+        lunchBreak: {
+          select: {
+            lunchBreakStart: true,
+            lunchBreakEnd: true,
+          },
+        },
+      },
+    });
+
+    return clockRecords.map(record => ({
+      id: record.id,
+      userId: record.userId,
+      clockIn: record.clockIn,
+      clockOut: record.clockOut,
+      lunchBreakStart: record.lunchBreak?.lunchBreakStart || null,
+      lunchBreakEnd: record.lunchBreak?.lunchBreakEnd || null,
+      createdAt: record.createdAt,
+    }));
   }
 
   async findUserById(userId: string) {
