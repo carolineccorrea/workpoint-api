@@ -1,10 +1,11 @@
 import { injectable, inject } from "tsyringe";
 import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
+import { ClockRecordRepository } from "../../infra/repositories/ClockRecordRepository";
 
 @injectable()
 export class ListUserClockRecordsUseCase {
   constructor(
-    private clockRepository: ClockRepository
+    private clockRepository: ClockRecordRepository
   ) {}
 
   async execute(userId: string): Promise<any> {

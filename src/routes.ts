@@ -9,6 +9,8 @@ import { handleController } from "./controllers/protocols/HandleController";
 import { ClockInController } from "./controllers/clockin/ClockInController";
 import { ClockOutController } from "./controllers/clockout/ClockOutController";
 import { ListUserClockRecordsController } from "./controllers/listClockRecords/listClockRecordController";
+import { LunchBreakStartController } from "./controllers/lunchBreak/LunchBreakStartController";
+import { LunchBreakEndController } from "./controllers/lunchEnd/LunchBreakEndController";
 
 const router = Router();
 
@@ -19,6 +21,9 @@ router.post("/auth", new AuthUserController().handle);
 router.post("/clockin", handleController(ClockInController));
 
 router.post("/clockout", handleController(ClockOutController));
+
+router.post("/lunchbreak/start", handleController(LunchBreakStartController));
+router.post("/lunchbreak/end", handleController(LunchBreakEndController));
 
 router.get("/record/list", handleController(ListUserClockRecordsController));
 
