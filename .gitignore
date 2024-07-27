@@ -1,1 +1,66 @@
-/node_modules
+# IDE specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Build output
+/build/
+*/build/
+
+# Gradle files
+.gradle/
+**/build/
+**/local.properties
+**/*.log
+**/*.lock
+**/*.log
+**/*.csv
+**/*.dat
+**/*.pid
+**/*.gz
+**/gradle-app.setting
+
+# Android Studio generated files and folders
+captures/
+output.json
+*.apk
+*.ap_
+*.db
+*.keystore
+*.jks
+
+# Android specific files
+/local.properties
+/.cxx/
+.externalNativeBuild/
+.cxx/
+
+# Uncomment the following line if you do not want to check in the Gradle wrapper jar file
+# gradle-wrapper.jar
+
+# Uncomment the following line if you do not want to check in the Gradle wrapper properties
+# gradle-wrapper.properties
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+.firebase/
+.fabric/
+
+# Dependency directories
+.DS_Store
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+
+# Miscellaneous
+*.orig
+
+# Environment variable files
+.env
