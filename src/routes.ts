@@ -18,13 +18,13 @@ const router = Router();
 router.post("/user", handleController(CreateUserController));
 router.post("/auth", new AuthUserController().handle);
 
-router.post("/clockin", handleController(ClockInController));
+router.post("/clockin", isAuthenticated, handleController(ClockInController));
 
-router.post("/clockout", handleController(ClockOutController));
+router.post("/clockout", isAuthenticated, handleController(ClockOutController));
 
-router.post("/lunchbreak/start", handleController(LunchBreakStartController));
-router.post("/lunchbreak/end", handleController(LunchBreakEndController));
+router.post("/lunchbreak/start", isAuthenticated, handleController(LunchBreakStartController));
+router.post("/lunchbreak/end", isAuthenticated, handleController(LunchBreakEndController));
 
-router.get("/record/list", handleController(ListUserClockRecordsController));
+router.get("/record/list", isAuthenticated, handleController(ListUserClockRecordsController));
 
 export { router };
