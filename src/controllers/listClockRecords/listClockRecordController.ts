@@ -10,7 +10,7 @@ class ListUserClockRecordsController implements IController {
   ) {}
 
   async handle(req: Request, res: Response): Promise<void> {
-    const { userId } = req.body;
+    const userId = req.query.userId as string;
     try {
       const clockRecords = await this.listUserClockRecordsUseCase.execute(userId);
       res.status(200).json(clockRecords);
