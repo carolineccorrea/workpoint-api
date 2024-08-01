@@ -1,5 +1,6 @@
+// src/controllers/protocols/HandleController.ts
 import { Request, Response, NextFunction } from 'express';
-import { container, DependencyContainer } from 'tsyringe';
+import { container } from 'tsyringe';
 import { IController } from './IController';
 
 export function handleController<T extends IController>(controllerType: new (...args: any[]) => T) {

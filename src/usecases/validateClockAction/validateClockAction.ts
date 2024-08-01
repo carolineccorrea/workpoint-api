@@ -6,7 +6,7 @@ import { VALIDATION_FLAGS, LUNCH_TIME } from "../../flags/flags";
 @injectable()
 export class ValidateClockActionUseCase {
   constructor(
-    private clockRepository: ClockRepository
+    @inject(ClockRepository) private clockRepository: ClockRepository
   ) {}
 
   private async hasClockInToday(userId: string, now: DateTime): Promise<boolean> {
