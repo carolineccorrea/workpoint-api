@@ -1,0 +1,23 @@
+// src/container.ts
+import 'reflect-metadata'; // Certifique-se de que isto está no topo
+import { container } from 'tsyringe';
+import { ClockRepository } from './infra/repositories/ClockInOutRepository';
+import { AuthRepository } from './infra/repositories/AuthRepository';
+import { CreateClockInUseCase } from './usecases/clockIn/CreateClockInUseCase';
+import { ValidateClockActionUseCase } from './usecases/validateClockAction/validateClockAction';
+import { AuthUserUseCase } from './usecases/users/AuthUserUseCase';
+import { ClockRecordRepository } from './infra/repositories/ClockRecordRepository';
+import { UserRepository } from './infra/repositories/UserRepository';
+
+// Register repositories
+container.registerSingleton('ClockRepository', ClockRepository);
+container.registerSingleton('AuthRepository', AuthRepository);
+container.registerSingleton('ClockRecordRepository', ClockRecordRepository);
+container.registerSingleton('UserRepository', UserRepository);
+
+// Register use cases
+container.registerSingleton('ValidateClockActionUseCase', ValidateClockActionUseCase);
+container.registerSingleton('CreateClockInUseCase', CreateClockInUseCase);
+container.registerSingleton('AuthUserUseCase', AuthUserUseCase);
+
+export { container };

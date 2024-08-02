@@ -1,6 +1,8 @@
 import prismaClient from "../../prisma";
 import { ClockRecordDTO } from "../dtos/ClockRecordDTO";
+import { injectable } from 'tsyringe';
 
+@injectable()
 class ClockRecordRepository {
   async findAllByUserIdGroupedByDay(userId: string): Promise<{ userId: string, name: string, records: Record<string, ClockRecordDTO[]> }> {
     const clockRecords = await prismaClient.clockInOut.findMany({

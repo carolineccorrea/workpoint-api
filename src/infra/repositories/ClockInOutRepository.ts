@@ -4,7 +4,9 @@ import { LunchBreakStartRequest } from "../../models/interfaces/lunchBreak/Lunch
 import { LunchBreakEndRequest } from "../../models/interfaces/lunchEnd/LunchEndRequest";
 import prismaClient from "../../prisma";
 import { ClockRecordDTO } from "../dtos/ClockRecordDTO";
+import { injectable } from 'tsyringe';
 
+@injectable()
 class ClockRepository {
   async createClockIn({ userId, clockIn }: ClockInRequest): Promise<ClockRecordDTO> {
     if (!userId || !clockIn) {

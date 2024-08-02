@@ -5,7 +5,7 @@ import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
 @injectable()
 export class CheckTimeDifferenceUseCase {
   constructor(
-    @inject(ClockRepository) private clockRepository: ClockRepository
+    @inject('ClockRepository') private clockRepository: ClockRepository
   ) {}
 
   async execute(userId: string, currentTime: DateTime): Promise<void> {
