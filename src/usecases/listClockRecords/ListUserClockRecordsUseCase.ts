@@ -5,7 +5,7 @@ import { ClockRecordRepository } from "../../infra/repositories/ClockRecordRepos
 @injectable()
 export class ListUserClockRecordsUseCase {
   constructor(
-    private clockRepository: ClockRecordRepository
+    @inject('ClockRecordRepository') private clockRepository: ClockRecordRepository
   ) {}
 
   async execute(userId: string): Promise<any> {

@@ -1,8 +1,10 @@
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import prismaClient from "../../prisma";
+import { injectable } from 'tsyringe';
 import { AuthUserRequest } from "../../models/interfaces/user/AuthUserRequest";
 
+@injectable()
 class AuthRepository {
   async auth({ email, password }: AuthUserRequest) {
     if (!email) {
@@ -10,7 +12,7 @@ class AuthRepository {
     }
 
     if (!password) {
-      throw new Error("A senha precisa ser enviado!");
+      throw new Error("A senha precisa ser enviada!");
     }
 
     const user = await prismaClient.user.findFirst({
@@ -31,23 +33,25 @@ class AuthRepository {
 
     const token = sign(
       {
-        name: user?.name,
-        email: user?.email,
+        name: user.name,
+        email: user.email,
+        role: user.role, // Incluindo a role no payload do token
       },
       process.env.JWT_SECRET as string,
       {
-        subject: user?.id,
+        subject: user.id,
         expiresIn: "30d",
       }
     );
 
     return {
-      id: user?.id,
-      name: user?.name,
-      email: user?.email,
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role, // Incluindo a role na resposta
       token: token,
     };
   }
 }
 
-export { AuthRepository};
+export { AuthRepository };

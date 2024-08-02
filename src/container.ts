@@ -1,23 +1,23 @@
 // src/container.ts
-import { container } from "tsyringe";
-import { ClockRepository } from "./infra/repositories/ClockInOutRepository";
-import { ClockInController } from "./controllers/clockin/ClockInController";
-import { CreateClockInUseCase } from "./usecases/clockIn/CreateClockInUseCase";
-import { ValidateClockActionUseCase } from "./usecases/validateClockAction/validateClockAction";
+import 'reflect-metadata'; // Certifique-se de que isto está no topo
+import { container } from 'tsyringe';
+import { ClockRepository } from './infra/repositories/ClockInOutRepository';
+import { AuthRepository } from './infra/repositories/AuthRepository';
+import { CreateClockInUseCase } from './usecases/clockIn/CreateClockInUseCase';
+import { ValidateClockActionUseCase } from './usecases/validateClockAction/validateClockAction';
+import { AuthUserUseCase } from './usecases/users/AuthUserUseCase';
+import { ClockRecordRepository } from './infra/repositories/ClockRecordRepository';
+import { UserRepository } from './infra/repositories/UserRepository';
 
-console.log('Registering dependencies...');
+// Register repositories
+container.registerSingleton('ClockRepository', ClockRepository);
+container.registerSingleton('AuthRepository', AuthRepository);
+container.registerSingleton('ClockRecordRepository', ClockRecordRepository);
+container.registerSingleton('UserRepository', UserRepository);
 
-// Register dependencies
-container.register("ClockRepository", { useClass: ClockRepository });
-console.log('ClockRepository registered');
-
-container.register("ValidateClockActionUseCase", { useClass: ValidateClockActionUseCase });
-console.log('ValidateClockActionUseCase registered');
-
-container.register("CreateClockInUseCase", { useClass: CreateClockInUseCase });
-console.log('CreateClockInUseCase registered');
-
-container.register("ClockInController", { useClass: ClockInController });
-console.log('ClockInController registered');
+// Register use cases
+container.registerSingleton('ValidateClockActionUseCase', ValidateClockActionUseCase);
+container.registerSingleton('CreateClockInUseCase', CreateClockInUseCase);
+container.registerSingleton('AuthUserUseCase', AuthUserUseCase);
 
 export { container };

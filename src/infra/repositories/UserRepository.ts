@@ -1,7 +1,8 @@
 import prismaClient from "../../prisma";
 import { hash } from "bcryptjs";
 import { CreateUserRequest } from "../../models/interfaces/user/CreateUserRequest";
-
+import { injectable } from 'tsyringe';
+@injectable()
 class UserRepository {
   async create({ name, email, password }: CreateUserRequest) {
     if (!email) {

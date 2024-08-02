@@ -7,8 +7,8 @@ import { ValidateClockActionUseCase } from "../validateClockAction/validateClock
 @injectable()
 export class CreateClockInUseCase {
   constructor(
-    @inject(ClockRepository) private clockRepository: ClockRepository,
-    @inject(ValidateClockActionUseCase) private validateClockActionUseCase: ValidateClockActionUseCase
+    @inject('ClockRepository') private clockRepository: ClockRepository,
+    @inject('ValidateClockActionUseCase') private validateClockActionUseCase: ValidateClockActionUseCase
   ) {}
 
   async execute(userId: string): Promise<any> {
