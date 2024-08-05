@@ -6,7 +6,7 @@ import { UpdateClockOutUseCase } from "../../usecases/clockOut/UpdateClockoutUse
 @injectable()
 class ClockOutController implements IController {
   constructor(
-    @inject(UpdateClockOutUseCase) private updateClockOutUseCase: UpdateClockOutUseCase
+    @inject('UpdateClockOutUseCase') private updateClockOutUseCase: UpdateClockOutUseCase
   ) {}
 
   async handle(req: Request, res: Response): Promise<void> {

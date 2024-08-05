@@ -7,7 +7,7 @@ import { LunchBreakEndUseCase } from "../../usecases/lunchBreakEnd/LunchBreakEnd
 @injectable()
 class LunchBreakEndController implements IController {
   constructor(
-    @inject(LunchBreakEndUseCase) private updateLunchBreakEndUseCase: LunchBreakEndUseCase
+    @inject('LunchBreakEndUseCase') private updateLunchBreakEndUseCase: LunchBreakEndUseCase
   ) {}
 
   async handle(req: Request, res: Response): Promise<void> {

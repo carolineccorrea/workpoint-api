@@ -7,7 +7,7 @@ import { CreateClockInUseCase } from "../../usecases/clockIn/CreateClockInUseCas
 @injectable()
 class ClockInController implements IController {
   constructor(
-    @inject(CreateClockInUseCase) private createClockInUseCase: CreateClockInUseCase
+    @inject('CreateClockInUseCase') private createClockInUseCase: CreateClockInUseCase
   ) {}
 
   async handle(req: Request, res: Response): Promise<void> {
