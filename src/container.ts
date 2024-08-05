@@ -8,16 +8,26 @@ import { ValidateClockActionUseCase } from './usecases/validateClockAction/valid
 import { AuthUserUseCase } from './usecases/users/AuthUserUseCase';
 import { ClockRecordRepository } from './infra/repositories/ClockRecordRepository';
 import { UserRepository } from './infra/repositories/UserRepository';
+import { FlagRepository } from './infra/repositories/FlagsRepository';
+import { FlagsUseCase } from './usecases/flags/FlagsUseCase';
+import { CreateLunchBreakStartUseCase } from './usecases/lunchBreakStart/CreateLunchBreakStartUseCase';
+import { UpdateClockOutUseCase } from './usecases/clockOut/UpdateClockoutUseCase';
+import { LunchBreakEndUseCase } from './usecases/lunchBreakEnd/LunchBreakEndUseCase';
 
 // Register repositories
 container.registerSingleton('ClockRepository', ClockRepository);
 container.registerSingleton('AuthRepository', AuthRepository);
 container.registerSingleton('ClockRecordRepository', ClockRecordRepository);
 container.registerSingleton('UserRepository', UserRepository);
+container.registerSingleton('FlagRepository', FlagRepository);
 
 // Register use cases
 container.registerSingleton('ValidateClockActionUseCase', ValidateClockActionUseCase);
 container.registerSingleton('CreateClockInUseCase', CreateClockInUseCase);
+container.registerSingleton('CreateLunchBreakStartUseCase', CreateLunchBreakStartUseCase);
 container.registerSingleton('AuthUserUseCase', AuthUserUseCase);
+container.registerSingleton('FlagsUseCase', FlagsUseCase);
+container.registerSingleton('UpdateClockOutUseCase', UpdateClockOutUseCase);
+container.registerSingleton('LunchBreakEndUseCase', LunchBreakEndUseCase);
 
 export { container };

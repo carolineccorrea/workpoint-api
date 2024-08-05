@@ -6,7 +6,7 @@ import { CreateLunchBreakStartUseCase } from "../../usecases/lunchBreakStart/Cre
 @injectable()
 class LunchBreakStartController implements IController {
   constructor(
-    @inject(CreateLunchBreakStartUseCase) private createLunchBreakStartUseCase: CreateLunchBreakStartUseCase
+    @inject('CreateLunchBreakStartUseCase') private createLunchBreakStartUseCase: CreateLunchBreakStartUseCase
   ) {}
 
   async handle(req: Request, res: Response): Promise<void> {
