@@ -1,12 +1,15 @@
 import { injectable, inject } from "tsyringe";
 import { DateTime } from "luxon";
 import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
-import { VALIDATION_FLAGS, LUNCH_TIME } from "../../flags/flags";
+import { FlagsUseCase } from "../flags/FlagsUseCase";
+import { Flag } from "../../models/interfaces/flags/Flag";
 
 @injectable()
 export class ValidateClockActionUseCase {
+  
   constructor(
-    @inject('ClockRepository') private clockRepository: ClockRepository
+    @inject('ClockRepository') private clockRepository: ClockRepository,
+    @inject('FlagsUseCase') private flagUseCase: FlagsUseCase
   ) {}
 
   private async hasClockInToday(userId: string, now: DateTime): Promise<boolean> {
@@ -31,12 +34,18 @@ export class ValidateClockActionUseCase {
   }
 
   async validateClockIn(userId: string): Promise<void> {
+    const lunchTimeFlag = await this.flagUseCase.getLunchTimeFlag();
+    const strictModeFlag = await this.flagUseCase.getStrictMode();
+    const lunchTimeEnforcedFlag = await this.flagUseCase.getLunchTimeEnforcedFlag();
+
+    const { MIN, MAX } = lunchTimeFlag.value;
+
     const userExists = await this.clockRepository.findUserById(userId);
     if (!userExists) {
       throw new Error("User not found");
     }
 
-    if (VALIDATION_FLAGS.STRICT_MODE) {
+    if (strictModeFlag.value) {
       const now = DateTime.now().minus({ hours: 3 });
       if (await this.hasClockInToday(userId, now)) {
         throw new Error("Cannot clock in more than once in a day");
@@ -45,13 +54,19 @@ export class ValidateClockActionUseCase {
   }
 
   async validateLunchBreakStart(userId: string): Promise<void> {
+    const lunchTimeFlag = await this.flagUseCase.getLunchTimeFlag();
+    const strictModeFlag = await this.flagUseCase.getStrictMode();
+    const lunchTimeEnforcedFlag = await this.flagUseCase.getLunchTimeEnforcedFlag();
+
+    const { MIN, MAX } = lunchTimeFlag.value;
+
     const now = DateTime.now().minus({ hours: 3 });
 
     if (!await this.hasClockInToday(userId, now)) {
       throw new Error("Cannot start lunch break without a clock-in first");
     }
 
-    if (VALIDATION_FLAGS.STRICT_MODE) {
+    if (strictModeFlag.value) {
       if (await this.hasLunchBreakStartToday(userId, now)) {
         throw new Error("Cannot start lunch break more than once in a day");
       }
@@ -59,29 +74,41 @@ export class ValidateClockActionUseCase {
   }
 
   async validateLunchBreakEnd(userId: string): Promise<void> {
+    const lunchTimeFlag = await this.flagUseCase.getLunchTimeFlag();
+    const strictModeFlag = await this.flagUseCase.getStrictMode();
+    const lunchTimeEnforcedFlag = await this.flagUseCase.getLunchTimeEnforcedFlag();
+
+    const { MIN, MAX } = lunchTimeFlag.value;
+
     const now = DateTime.now().minus({ hours: 3 });
 
     if (!await this.hasLunchBreakStartToday(userId, now)) {
       throw new Error("Cannot end lunch break without a lunch break start first");
     }
 
-    if (VALIDATION_FLAGS.STRICT_MODE) {
+    if (strictModeFlag.value) {
       if (await this.hasLunchBreakEndToday(userId, now)) {
         throw new Error("Cannot end lunch break more than once in a day");
       }
     }
 
-    if (VALIDATION_FLAGS.LUNCH_TIME_ENFORCED) {
+    if (lunchTimeEnforcedFlag.value) {
       const lunchBreakStartToday = await this.clockRepository.findLunchBreakStartByUserIdAndDateRange(userId, now.startOf('day').toJSDate(), now.endOf('day').toJSDate());
       const lunchBreakStart = DateTime.fromJSDate(lunchBreakStartToday.lunchBreakStart);
       const duration = now.diff(lunchBreakStart, 'minutes').minutes;
-      if (duration < LUNCH_TIME.MIN || duration > LUNCH_TIME.MAX) {
-        throw new Error(`Lunch break must be between ${LUNCH_TIME.MIN} and ${LUNCH_TIME.MAX} minutes`);
+      if (duration < MIN || duration > MAX) {
+        throw new Error(`Lunch break must be between ${MIN} and ${MAX} minutes`);
       }
     }
   }
 
   async validateClockOut(userId: string): Promise<void> {
+    const lunchTimeFlag = await this.flagUseCase.getLunchTimeFlag();
+    const strictModeFlag = await this.flagUseCase.getStrictMode();
+    const lunchTimeEnforcedFlag = await this.flagUseCase.getLunchTimeEnforcedFlag();
+
+    const { MIN, MAX } = lunchTimeFlag.value;
+
     const now = DateTime.now().minus({ hours: 3 });
 
     if (!await this.hasClockInToday(userId, now)) {
@@ -96,7 +123,7 @@ export class ValidateClockActionUseCase {
       throw new Error("Cannot clock out without a lunch break end first");
     }
 
-    if (VALIDATION_FLAGS.STRICT_MODE) {
+    if (strictModeFlag.value) {
       const todayStart = now.startOf('day').toJSDate();
       const todayEnd = now.endOf('day').toJSDate();
       const clockOutToday = await this.clockRepository.findClockOutByUserIdAndDateRange(userId, todayStart, todayEnd);
@@ -105,13 +132,13 @@ export class ValidateClockActionUseCase {
       }
     }
 
-    if (VALIDATION_FLAGS.LUNCH_TIME_ENFORCED) {
+    if (lunchTimeEnforcedFlag.value) {
       const lunchBreakStartToday = await this.clockRepository.findLunchBreakStartByUserIdAndDateRange(userId, now.startOf('day').toJSDate(), now.endOf('day').toJSDate());
       const lunchBreakEndToday = await this.clockRepository.findLunchBreakEndByUserIdAndDateRange(userId, now.startOf('day').toJSDate(), now.endOf('day').toJSDate());
       const lunchBreakStart = DateTime.fromJSDate(lunchBreakStartToday.lunchBreakStart);
       const duration = DateTime.fromJSDate(lunchBreakEndToday.lunchBreakEnd).diff(lunchBreakStart, 'minutes').minutes;
-      if (duration < LUNCH_TIME.MIN || duration > LUNCH_TIME.MAX) {
-        throw new Error(`Lunch break must be between ${LUNCH_TIME.MIN} and ${LUNCH_TIME.MAX} minutes`);
+      if (duration < MIN || duration > MAX) {
+        throw new Error(`Lunch break must be between ${MIN} and ${MAX} minutes`);
       }
     }
   }

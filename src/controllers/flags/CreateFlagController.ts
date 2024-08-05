@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
 import { IController } from "../protocols/IController";
-import { ManageFlagsUseCase } from "../../usecases/flags/ManageFlagsUseCase";
+import { ManageFlagsUseCase } from "../../usecases/flags/FlagsUseCase";
 
 @injectable()
 class CreateFlagController implements IController {

@@ -2,12 +2,12 @@
 import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
 import { IController } from "../protocols/IController";
-import { ManageFlagsUseCase } from "../../usecases/flags/ManageFlagsUseCase";
+import { FlagsUseCase } from "../../usecases/flags/FlagsUseCase";
 
 @injectable()
 class UpdateFlagController implements IController {
   constructor(
-    @inject(ManageFlagsUseCase) private manageFlagsUseCase: ManageFlagsUseCase
+    @inject(FlagsUseCase) private manageFlagsUseCase: FlagsUseCase
   ) {}
 
   async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
