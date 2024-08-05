@@ -12,6 +12,8 @@ import { ListUserClockRecordsController } from "./controllers/listClockRecords/l
 import { LunchBreakStartController } from "./controllers/lunchBreak/LunchBreakStartController";
 import { LunchBreakEndController } from "./controllers/lunchEnd/LunchBreakEndController";
 import { isAdmin } from "./middlewares/isAdmin";
+import { CreateFlagController } from "./controllers/flags/CreateFlagController";
+import { UpdateFlagController } from "./controllers/flags/UpdateFlagController";
 
 const router = Router();
 
@@ -31,6 +33,10 @@ router.get("/record/list", isAuthenticated, handleController(ListUserClockRecord
 router.get('/admin-only', isAuthenticated, isAdmin, (req, res) => {
   res.send('Admin content');
 });
+
+// Admin-only routes for managing flags
+router.post('/flags', isAuthenticated, isAdmin, handleController(CreateFlagController));
+router.put('/flags', isAuthenticated, isAdmin, handleController(UpdateFlagController));
 
 
 
