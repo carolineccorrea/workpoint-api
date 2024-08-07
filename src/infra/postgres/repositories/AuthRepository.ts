@@ -1,8 +1,9 @@
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
-import prismaClient from "../../prisma";
 import { injectable } from 'tsyringe';
-import { AuthUserRequest } from "../../models/interfaces/user/AuthUserRequest";
+import { AuthUserRequest } from "../../../models/interfaces/user/AuthUserRequest";
+import prismaClient from "../../../prisma";
+
 
 @injectable()
 class AuthRepository {

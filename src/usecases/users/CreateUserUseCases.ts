@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { UserRepository } from "../../infra/repositories/UserRepository";
+import { UserRepository } from "../../infra/mongodb/repository/UserRepository";
 
 @injectable()
 export class CreateUserUseCase {
@@ -8,7 +8,7 @@ export class CreateUserUseCase {
 
     async execute(name: string, email: string, password: string): Promise<any> {
       try {  
-        return this.userRepo.create({ name, email, password });
+        return this.userRepo.create({name, email, password});
       } catch (error) {
         return error;
       }

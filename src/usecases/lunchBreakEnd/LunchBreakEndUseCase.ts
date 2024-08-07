@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import { DateTime } from "luxon";
-import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
 import { ValidateClockActionUseCase } from "../validateClockAction/validateClockAction";
+import { ClockRepository } from "../../infra/mongodb/repository/ClockInOutRepository";
 
 @injectable()
 export class LunchBreakEndUseCase {

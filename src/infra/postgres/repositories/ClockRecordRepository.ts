@@ -1,6 +1,6 @@
-import prismaClient from "../../prisma";
-import { ClockRecordDTO } from "../dtos/ClockRecordDTO";
 import { injectable } from 'tsyringe';
+import prismaClient from '../../../prisma';
+import { ClockRecordDTO } from '../../dtos/ClockRecordDTO';
 
 @injectable()
 class ClockRecordRepository {
