@@ -34,11 +34,7 @@ export class ValidateClockActionUseCase {
   }
 
   async validateClockIn(userId: string): Promise<void> {
-    const lunchTimeFlag = await this.flagUseCase.getLunchTimeFlag();
     const strictModeFlag = await this.flagUseCase.getStrictMode();
-    const lunchTimeEnforcedFlag = await this.flagUseCase.getLunchTimeEnforcedFlag();
-
-    const { MIN, MAX } = lunchTimeFlag.value;
 
     const userExists = await this.clockRepository.findUserById(userId);
     if (!userExists) {
