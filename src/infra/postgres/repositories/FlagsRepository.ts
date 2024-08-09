@@ -1,6 +1,6 @@
 // src/infra/repositories/FlagRepository.ts
-import prismaClient from "../../prisma";
 import { injectable } from "tsyringe";
+import prismaClient from "../../../prisma";
 
 @injectable()
 class FlagRepository {

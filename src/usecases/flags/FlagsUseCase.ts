@@ -1,7 +1,8 @@
 // src/usecases/flags/FlagsUseCase.ts
 import { injectable, inject } from "tsyringe";
-import { FlagRepository } from "../../infra/repositories/FlagsRepository";
 import { Flag } from "../../models/interfaces/flags/Flag";
+import { FlagRepository } from "../../infra/mongodb/repository/FlagRepository";
+import { IFlag } from "../../infra/mongodb/schemas/FlagSchema";
 
 @injectable()
 class FlagsUseCase {
@@ -30,7 +31,7 @@ class FlagsUseCase {
     return await this.flagRepository.deleteFlag(name);
   }
 
-  async getLunchTimeFlag(): Promise<Flag> {
+  async getLunchTimeFlag(): Promise<IFlag> {
     const lunchTimeFlag = await this.getFlagByName("LUNCH_TIME");
     if (!lunchTimeFlag) {
       throw new Error("LUNCH_TIME flag not found");
@@ -38,7 +39,7 @@ class FlagsUseCase {
     return lunchTimeFlag;
   }
 
-  async getLunchTimeEnforcedFlag(): Promise<Flag> {
+  async getLunchTimeEnforcedFlag(): Promise<IFlag> {
     const lunchTimeFlag = await this.getFlagByName("LUNCH_TIME_ENFORCED");
     if (!lunchTimeFlag) {
       throw new Error("LUNCH_TIME_ENFORCED flag not found");
@@ -46,7 +47,7 @@ class FlagsUseCase {
     return lunchTimeFlag;
   }
 
-  async getStrictMode(): Promise<Flag> {
+  async getStrictMode(): Promise<IFlag> {
     const lunchTimeFlag = await this.getFlagByName("STRICT_MODE");
     if (!lunchTimeFlag) {
       throw new Error("LUNCH_TIME_ENFORCED flag not found");

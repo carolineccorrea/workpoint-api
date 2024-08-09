@@ -1,6 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { DateTime } from "luxon";
-import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
+import { ClockRepository } from "../../infra/postgres/repositories/ClockInOutRepository";
 
 @injectable()
 export class CheckTimeDifferenceUseCase {

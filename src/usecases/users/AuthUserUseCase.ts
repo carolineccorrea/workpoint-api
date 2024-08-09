@@ -1,6 +1,6 @@
 // src/usecases/users/AuthUserUseCase.ts
 import { inject, injectable } from 'tsyringe';
-import { AuthRepository } from '../../infra/repositories/AuthRepository';
+import { AuthRepository } from '../../infra/mongodb/repository/AuthRepository';
 
 @injectable()
 export class AuthUserUseCase {

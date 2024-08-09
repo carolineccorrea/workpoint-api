@@ -1,6 +1,6 @@
 import { injectable, inject } from "tsyringe";
 import { DateTime } from "luxon";
-import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
+import { ClockRepository } from "../../infra/mongodb/repository/ClockInOutRepository";
 import { ValidateClockActionUseCase } from "../validateClockAction/validateClockAction";
 
 

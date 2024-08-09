@@ -1,10 +1,11 @@
-import { ClockInRequest } from "../../models/interfaces/clockIn/clockInRequest";
-import { ClockOutRequest } from "../../models/interfaces/clockOut/clockOutRequest";
-import { LunchBreakStartRequest } from "../../models/interfaces/lunchBreak/LunchBreakStartRequest";
-import { LunchBreakEndRequest } from "../../models/interfaces/lunchEnd/LunchEndRequest";
-import prismaClient from "../../prisma";
-import { ClockRecordDTO } from "../dtos/ClockRecordDTO";
+
 import { injectable } from 'tsyringe';
+import { ClockInRequest } from '../../../models/interfaces/clockIn/clockInRequest';
+import { ClockOutRequest } from '../../../models/interfaces/clockOut/clockOutRequest';
+import { LunchBreakStartRequest } from '../../../models/interfaces/lunchBreak/LunchBreakStartRequest';
+import { LunchBreakEndRequest } from '../../../models/interfaces/lunchEnd/LunchEndRequest';
+import prismaClient from '../../../prisma';
+import { ClockRecordDTO } from '../../dtos/ClockRecordDTO';
 
 @injectable()
 class ClockRepository {

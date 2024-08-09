@@ -63,4 +63,5 @@ package-lock.json
 *.orig
 
 # Environment variable files
+env
 .env

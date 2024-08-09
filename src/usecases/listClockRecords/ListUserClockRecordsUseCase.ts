@@ -1,6 +1,5 @@
 import { injectable, inject } from "tsyringe";
-import { ClockRepository } from "../../infra/repositories/ClockInOutRepository";
-import { ClockRecordRepository } from "../../infra/repositories/ClockRecordRepository";
+import { ClockRecordRepository } from "../../infra/mongodb/repository/ClockRecordRepository";
 
 @injectable()
 export class ListUserClockRecordsUseCase {
